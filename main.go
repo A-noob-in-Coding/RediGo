@@ -24,7 +24,7 @@ func handleReq(v http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Printf("Cache Cleared Successfully\n")
+		io.WriteString(v, "Cache Cleared Successfully\n")
 		return
 	}
 
@@ -86,4 +86,3 @@ func main() {
 	fmt.Printf("Server running at Port %s\n", *Port)
 	http.ListenAndServe(":"+*Port, nil)
 }
-
