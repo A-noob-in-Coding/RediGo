@@ -42,8 +42,6 @@ func handleReq(v http.ResponseWriter, r *http.Request) {
 		io.WriteString(v, result)
 
 		return
-	} else {
-		fmt.Printf("Cache Miss\n")
 	}
 	resp, err := http.Get(requestURL)
 	if err != nil {
@@ -57,8 +55,9 @@ func handleReq(v http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(resp.Body)
 	if reqHeaders == "no" {
 		header.Set("X-Cache", "Refreshed")
+		fmt.Printf("Cache Refreshed\n")
 	} else {
-
+		fmt.Printf("Cache Miss\n")
 		header.Set("X-Cache", "Miss")
 	}
 	_, _ = io.WriteString(v, string(body))
