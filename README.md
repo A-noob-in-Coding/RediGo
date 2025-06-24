@@ -34,16 +34,16 @@ curl -H "Cache-Required: (no^yes)" <request url>
    - Try to get the response from Redis using the full URL as the key.
    - **If found:**
      - Return cached response.
-     - Add header: `X-Cache: HIT`
+     - Add header: `X-Cache: Hit`
    - **If not found:**
      - Forward the request to the origin.
      - Cache the new response.
-     - Add header: `X-Cache: MISS`
+     - Add header: `X-Cache: Miss`
 
 #### If `Cache-Required: no`:
    - Always send the request to the origin.
    - Cache the response (overwriting any existing value).
-   - Add header: `X-Cache: REFRESHED`
+   - Add header: `X-Cache: Refreshed`
 
 ---
 
