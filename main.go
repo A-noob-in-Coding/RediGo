@@ -35,7 +35,8 @@ func handleReq(v http.ResponseWriter, r *http.Request) {
 	}
 
 	result, err := rdb.Get(ctx, requestURL).Result()
-	if err == nil && reqHeaders == "yes" {
+	if err == nil && reqHeaders != "no" {
+
 		fmt.Printf("Cache Hit\n")
 		header.Set("X-Cache", "Hit")
 		io.WriteString(v, result)
@@ -54,7 +55,12 @@ func handleReq(v http.ResponseWriter, r *http.Request) {
 	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
-	header.Set("X-Cache", "Miss")
+	if reqHeaders == "no" {
+		header.Set("X-Cache", "Refreshed")
+	} else {
+
+		header.Set("X-Cache", "Miss")
+	}
 	_, _ = io.WriteString(v, string(body))
 
 	err = rdb.Set(ctx, requestURL, string(body), 0).Err()
