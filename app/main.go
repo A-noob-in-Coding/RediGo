@@ -2,21 +2,21 @@ package main
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"github.com/redis/go-redis/v9"
 	"io"
 	"net/http"
+	"os"
 )
 
 var (
 	ctx = context.Background()
 	rdb *redis.Client
 )
-var Origin *string
-var Port *string // default port
+var Origin string
+var Port string // default port
 func handleReq(v http.ResponseWriter, r *http.Request) {
-	requestURL := *Origin
+	requestURL := Origin
 	header := v.Header()
 	reqHeaders := r.Header.Get("Cache-Required")
 	if r.URL.Path == "/redigo/clear" {
@@ -69,19 +69,28 @@ func handleReq(v http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	Port = flag.String("port", "1234", "port number or proxy server to run")
-	Origin = flag.String("origin", "", "origin endpoint to forward requests")
-	flag.Parse()
-	if *Origin == "" {
-		fmt.Println("Set origin using -origin <origin>")
+	var exists bool
+	Port, exists = os.LookupEnv("PORT")
+	if !exists {
+		Port = "1234"
+	}
+
+	Origin, exists = os.LookupEnv("ORIGIN")
+	if !exists || Origin == "" {
+		fmt.Println("Set ORIGIN environment variable")
 		return
 	}
+
 	rdb = redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "",
-		DB:       0,
+		Addr: "redis:6379",
 	})
+
 	http.HandleFunc("/", handleReq)
-	fmt.Printf("Server running at Port %s\n", *Port)
-	http.ListenAndServe(":"+*Port, nil)
+
+	fmt.Printf("Server running at Port %s\n", Port)
+
+	err := http.ListenAndServe(":"+Port, nil)
+	if err != nil {
+		fmt.Println("Server error:", err)
+	}
 }

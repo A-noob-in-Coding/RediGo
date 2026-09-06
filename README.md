@@ -7,15 +7,14 @@ A beginner level project to get started on Reverse Proxy and Caching. This proxy
 ### Installation
 
 1. Clone the project
-2. Run ```go mod tidy```
-3. Run redis-server using ```docker-compose up -d``` to run redis-db on detach mode
-4. Either run **main.go** using ```go run main.go -origin <origin-url> -port <portnumber>``` or compile into binary using ```go build ```
-5. Use the server on the port assigned (default port is 1234 🤓)
+2. Set origin and port in .env ( refer .env.example )
+3. Run ```docker-compose up -d``` to start both app and redis container
+4. Use the server on the port assigned (default port is 1234 🤓)
 
 ### Flow Overview
 
 1. **Start the Server**
-   - Accepts two flags:
+   - Accepts two variables:
      - `--port`: Port to listen on (default `1234`)
      - `--origin`: The origin base URL (e.g., `https://api.adviceslip.com`)
 

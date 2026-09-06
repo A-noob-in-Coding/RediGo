@@ -6,3 +6,15 @@ services:
       - "6379:6379"
     entrypoint: redis-server 
     restart: always
+  app:
+    container_name: redigo
+    image: golang:1.25
+    volumes:
+      - ./app:/app
+    command: go run . 
+    working_dir: /app
+    ports:
+      - "${PORT}:${PORT}"
+    env_file:
+        - .env
+    
